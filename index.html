@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a24">
+    <title>Table Tennis Reflex</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="game-container"></div>
+
+
+    <div class="hud-arcade-group hud-top-left">
+
+        <button class="hud-arcade-block hud-interactive" id="hud-trophy" data-i18n-title="trophies_title" title="Trophies Won">
+            <div class="hud-arcade-num" id="trophy-count">0</div>
+            <div class="hud-arcade-lbl" data-i18n="trophy_label">🏆 TROPHY</div>
+        </button>
+
+
+        <button id="btn-tournament" class="hud-arcade-block hud-interactive hud-tournament-badge" data-i18n-title="tournament_join_title" title="Dünya Turnuvası">
+            <div class="hud-arcade-num" id="tournament-stage-icon">🌍</div>
+            <div class="hud-arcade-lbl" id="tournament-stage-lbl" data-i18n="mode_tournament">TURNUVA</div>
+        </button>
+
+
+        <button id="btn-home" class="hud-arcade-block hud-interactive" data-i18n-title="home_title" title="Reset Match">
+            <div class="hud-arcade-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            </div>
+            <div class="hud-arcade-lbl" data-i18n="reset_label">RESET</div>
+        </button>
+    </div>
+
+
+    <div class="hud-arcade-group hud-top-right">
+
+        <button id="btn-sound" class="hud-arcade-block hud-interactive" data-i18n-title="sound_title" title="Toggle Sound">
+            <div class="hud-arcade-icon" id="sound-icon-wrap">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </div>
+            <div class="hud-arcade-lbl" id="sound-btn-text" data-i18n="sound_label">SOUND</div>
+        </button>
+
+
+        <button id="btn-fullscreen" class="hud-arcade-block hud-interactive" data-i18n-title="fullscreen_enter_title" title="Fullscreen (F)">
+            <div class="hud-arcade-icon">
+                <svg id="icon-fs-enter" viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                <svg id="icon-fs-exit" class="hidden" viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+            </div>
+            <div class="hud-arcade-lbl" id="fs-btn-text" data-i18n="fullscreen_label">FULL</div>
+        </button>
+
+
+        <button id="btn-pause" class="hud-arcade-block hud-interactive hud-pause-card" data-i18n-title="pause_title" title="Pause (ESC / P)">
+            <div class="hud-arcade-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </div>
+            <div class="hud-arcade-lbl" data-i18n="pause_label">PAUSE</div>
+        </button>
+
+
+        <select id="lang-select-top" class="hidden" style="display:none;" aria-hidden="true"></select>
+    </div>
+
+
+    <div id="scoreboard-wrapper">
+        <div class="scoreboard-hanger">
+            <div class="hanger-ring"></div>
+            <div class="hanger-ring"></div>
+        </div>
+        <div class="scoreboard-card-container">
+
+            <div id="serve-indicator" class="serve-ball player"></div>
+
+
+            <div class="team-box">
+                <div class="flag-box" id="flag-player-box" title="SEN">
+                    <img id="flag-player-img" src="assets/avatar_player.png" alt="Player">
+                </div>
+            </div>
+
+
+            <div class="score-flip-group">
+                <div id="score-player" class="flip-digit">0</div>
+                <div id="score-opponent" class="flip-digit">0</div>
+            </div>
+
+
+            <div class="team-box">
+                <div class="flag-box" id="flag-opponent-box" title="AI RAKİP">
+                    <img id="flag-opponent-img" src="assets/avatar_enemy.png" alt="Enemy">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="game-callout" class="hidden">SERVE!</div>
+
+
+
+    <button id="fullscreen-hint" class="bottom-fullscreen-hint" data-i18n-title="fullscreen_enter_title" title="Tam Ekran (F)">
+        <span class="fs-hint-icon">⛶</span>
+        <span id="fullscreen-hint-text" data-i18n="fullscreen_hint">En iyi deneyim için tam ekran moduna alın</span>
+    </button>
+
+
+    <div id="controls-hint" data-i18n-html="controls_hint">
+        🖱️ <b>Controls:</b> Paddle follows mouse. Hits automatically. Smash ⚡ | <b>[F]</b> Fullscreen | <b>[ESC/P]</b> Pause
+    </div>
+
+
+    <div id="rally-counter" class="rally-counter-container hidden">
+        <div id="rally-count-num" class="rally-count-number">0</div>
+        <div id="rally-count-label" class="rally-count-label" data-i18n="rally_label">RALLY</div>
+    </div>
+
+
+
+    <div id="arcade-serve-aim-hud" class="arcade-serve-aim-hud hidden" aria-live="polite">
+        <span id="serve-aim-label" class="arcade-serve-aim-label" data-i18n="arcade_serve_aim">SERVE TARGET</span>
+        <strong id="arcade-serve-aim-zone">DEEP RIGHT</strong>
+        <span class="arcade-serve-spin"><span data-i18n="arcade_serve_spin">SPIN</span> <b id="arcade-serve-aim-spin">0</b></span>
+    </div>
+
+
+    <div id="pro-technique-hud" class="pro-technique-hud hidden" aria-live="polite">
+        <div class="tech-hud-header">
+            <span class="tech-hud-title" data-i18n="coach_hud_title">PRO COACH</span>
+            <span id="tech-hud-grade" class="tech-hud-grade">--</span>
+        </div>
+        <div class="tech-hud-stroke-row">
+            <span id="tech-hud-stroke" class="tech-hud-stroke">READY</span>
+            <span id="tech-hud-speed" class="tech-hud-speed">0 km/h</span>
+        </div>
+        <div class="tech-hud-grid">
+            <div class="tech-hud-metric">
+                <span data-i18n="coach_contact">CONTACT</span>
+                <strong id="tech-hud-contact">--%</strong>
+            </div>
+            <div class="tech-hud-metric">
+                <span data-i18n="coach_face">FACE</span>
+                <strong id="tech-hud-face">--°</strong>
+            </div>
+            <div class="tech-hud-metric">
+                <span data-i18n="coach_topspin">TOP/BACK</span>
+                <strong id="tech-hud-spin-x">--</strong>
+            </div>
+            <div class="tech-hud-metric">
+                <span data-i18n="coach_sidespin">SIDE</span>
+                <strong id="tech-hud-spin-y">--</strong>
+            </div>
+        </div>
+        <div id="tech-hud-feedback" class="tech-hud-feedback" data-i18n="coach_ready">Hit the ball to get technique feedback.</div>
+        <div class="tech-hud-session">
+            <span class="tech-session-pill tech-pill-in"><b id="tech-stat-in">0</b> <span data-i18n="coach_in">IN</span></span>
+            <span class="tech-session-pill tech-pill-net"><b id="tech-stat-net">0</b> <span data-i18n="coach_net">NET</span></span>
+            <span class="tech-session-pill tech-pill-out"><b id="tech-stat-out">0</b> <span data-i18n="coach_out">OUT</span></span>
+        </div>
+    </div>
+
+
+    <div id="pause-modal" class="modal-overlay hidden">
+        <div class="modal-card pause-modal-card">
+            <div class="modal-header">
+                <div class="pause-header-top">
+                    <div class="pause-glow-icon">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </div>
+
+                    <div class="pause-match-score">
+                        <span class="pause-score-flag"><img id="pause-flag-player" src="assets/avatar_player.png" alt="Player"></span>
+                        <span class="pause-score-digit player" id="pause-score-player">0</span>
+                        <span class="pause-score-sep">:</span>
+                        <span class="pause-score-digit opponent" id="pause-score-opponent">0</span>
+                        <span class="pause-score-flag"><img id="pause-flag-opponent" src="assets/avatar_enemy.png" alt="Enemy"></span>
+                    </div>
+                </div>
+                <div class="ms-brand-badge"><span class="ms-brand-white">TABLE TENNIS</span> <span class="ms-brand-yellow">REFLEX</span></div>
+                <h2 data-i18n="pause_heading">GAME PAUSED</h2>
+                <p data-i18n="pause_desc">Select AI opponent difficulty or resume the match.</p>
+            </div>
+
+
+            <div class="modal-section">
+                <div class="modal-section-label">
+                    <span class="section-icon">🎮</span>
+                    <span data-i18n="mode_section_label">Oyun Modu</span>
+                </div>
+                <div class="mode-selector-group">
+                    <button class="mode-btn active" id="btn-mode-arcade" data-mode="arcade">
+                        <span data-i18n="btn_mode_arcade">⚔️ AI FIGHT (NORMAL)</span>
+                    </button>
+                    <button class="mode-btn" id="btn-mode-tournament" data-mode="tournament">
+                        <span data-i18n="btn_mode_tournament">🌍 DÜNYA TURNUVASI</span>
+                    </button>
+                </div>
+                <button id="btn-pause-bracket" class="game-btn secondary hidden" style="margin-top: 8px; width: 100%; font-size: 11.5px; padding: 8px 12px;">
+                    <span data-i18n="btn_tournament_view_bracket">TURNUVA AĞACINI GÖRÜNTÜLE ➔</span>
+                </button>
+            </div>
+
+
+            <div class="modal-section" id="pause-diff-section">
+                <div class="modal-section-label">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="section-icon">🎯</span>
+                        <span data-i18n="diff_title">AI Difficulty</span>
+                    </div>
+                    <span id="diff-locked-badge" class="diff-locked-badge hidden" data-i18n="diff_locked_in_tourney">🔒 Turnuvada Kilitli</span>
+                </div>
+                <div class="diff-selector" id="pause-diff-selector">
+                    <button class="diff-btn" data-diff="easy">
+                        <span class="diff-dot easy"></span>
+                        <span data-i18n="diff_easy">Easy</span>
+                    </button>
+                    <button class="diff-btn active" data-diff="medium">
+                        <span class="diff-dot medium"></span>
+                        <span data-i18n="diff_medium">Medium</span>
+                    </button>
+                    <button class="diff-btn" data-diff="hard">
+                        <span class="diff-dot hard"></span>
+                        <span data-i18n="diff_hard">Hard</span>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="modal-section pro-coach-section" id="pause-physics-section">
+                <div class="pro-coach-setting" id="pro-coach-setting">
+                    <div class="pro-coach-setting-copy">
+                        <strong data-i18n="coach_toggle_title">PRO TECHNIQUE COACH</strong>
+                        <span data-i18n="coach_toggle_desc">Shows contact, racket face, spin and mistake feedback after every Pro stroke.</span>
+                    </div>
+                    <button id="btn-pro-coach" class="coach-toggle-btn" type="button" aria-pressed="true">
+                        <span id="pro-coach-toggle-text" data-i18n="coach_on">ON</span>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="modal-section">
+                <div class="modal-section-label">
+                    <span class="section-icon">🌐</span>
+                    <span data-i18n="lang_label">Language</span>
+                </div>
+                <div class="lang-btn-group">
+                    <button class="lang-pill-btn" data-lang="tr">🇹🇷 TR</button>
+                    <button class="lang-pill-btn" data-lang="en">🇬🇧 EN</button>
+                    <button class="lang-pill-btn" data-lang="es">🇪🇸 ES</button>
+                    <button class="lang-pill-btn" data-lang="zh">🇨🇳 中文</button>
+                    <button class="lang-pill-btn" data-lang="hi">🇮🇳 हिन्दी</button>
+                </div>
+            </div>
+
+
+            <div class="modal-actions-group">
+                <button id="btn-resume" class="game-btn primary-resume" data-i18n="btn_resume">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <span>RESUME</span>
+                </button>
+                <div class="modal-actions-row">
+                    <button id="btn-restart" class="game-btn secondary" data-i18n="btn_restart">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                        <span>RESTART MATCH</span>
+                    </button>
+                    <button id="btn-modal-fullscreen" class="game-btn secondary" data-i18n="fullscreen_enter_btn">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                        <span>FULLSCREEN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="game-over-modal" class="modal-overlay hidden">
+        <div class="modal-card game-over-card">
+
+            <div class="game-over-header">
+                <div id="game-over-icon" class="game-over-icon win">🏆</div>
+                <h2 id="modal-title" class="game-over-title" data-i18n="match_won_title">TEBRİKLER, KAZANDIN! 🏆</h2>
+                <p id="modal-desc" class="game-over-desc" data-i18n="match_won_desc">Muhteşem bir maç!</p>
+            </div>
+
+
+            <div class="game-over-score-row">
+                <div class="go-team-block">
+                    <img id="go-flag-player" src="assets/avatar_player.png" class="go-flag" alt="Player">
+                    <span id="go-team-player" class="go-team-label" data-i18n="player_label">SEN</span>
+                    <span id="go-score-player" class="go-score-digit player">0</span>
+                </div>
+                <div class="go-score-divider">
+                    <span class="go-vs">VS</span>
+                </div>
+                <div class="go-team-block">
+                    <img id="go-flag-opponent" src="assets/avatar_enemy.png" class="go-flag" alt="Enemy">
+                    <span id="go-team-opponent" class="go-team-label" data-i18n="enemy_label">AI RAKİP</span>
+                    <span id="go-score-opponent" class="go-score-digit opponent">0</span>
+                </div>
+            </div>
+
+
+            <div id="pro-performance-report" class="pro-performance-report hidden">
+                <div class="pro-report-head">
+                    <span class="pro-report-kicker" data-i18n="pro_report_title">PRO TECHNICAL SUMMARY</span>
+                    <span class="pro-report-sub" data-i18n="pro_report_sub">MEASURED · PRO PHYSICS</span>
+                </div>
+                <div class="pro-report-grid">
+                    <div><span data-i18n="pro_report_accuracy">SHOT IN</span><strong id="pro-report-accuracy">0%</strong></div>
+                    <div><span data-i18n="pro_report_contact">AVG CONTACT</span><strong id="pro-report-contact">0%</strong></div>
+                    <div><span data-i18n="pro_report_speed">MAX SPEED</span><strong id="pro-report-speed">0 km/h</strong></div>
+                    <div><span data-i18n="pro_report_spin">MAX SPIN</span><strong id="pro-report-spin">0</strong></div>
+                    <div><span data-i18n="pro_report_serve">SERVE IN</span><strong id="pro-report-serve">0%</strong></div>
+                    <div><span data-i18n="pro_report_rally">MAX RALLY</span><strong id="pro-report-rally">0</strong></div>
+                </div>
+            </div>
+
+
+            <div class="game-over-actions">
+                <button id="btn-tournament-advance" class="game-btn go-btn-primary hidden">
+                    <span id="btn-tournament-advance-text" data-i18n="btn_tournament_advance">TURNUVA AĞACINA GEÇ ➔</span>
+                </button>
+                <button id="btn-rematch" class="game-btn go-btn-primary">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                    <span data-i18n="btn_rematch">YENİDEN OYNA</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="country-select-modal" class="modal-overlay hidden">
+        <div class="modal-card country-select-card">
+            <div class="modal-header">
+                <div class="bracket-header-top">
+                    <div class="country-glow-icon">🌍</div>
+                    <button id="btn-country-modal-close" class="modal-close-icon" data-i18n-title="btn_close" title="Close">&times;</button>
+                </div>
+                <div class="ms-brand-badge"><span class="ms-brand-white">TABLE TENNIS</span> <span class="ms-brand-yellow">REFLEX</span></div>
+                <h2 data-i18n="country_select_title">DÜNYA TURNUVASI</h2>
+                <p data-i18n="country_select_desc">Masa tenisi dünya kupası için ülkeni seç ve zafere taşı!</p>
+            </div>
+
+
+            <div class="tourney-format-selector">
+                <button class="tourney-format-btn active" id="btn-tourney-masters" data-format="masters">
+                    <span data-i18n="tourney_type_masters">MASTERS KUPASI (8)</span>
+                </button>
+                <button class="tourney-format-btn" id="btn-tourney-world" data-format="world">
+                    <span data-i18n="tourney_type_world">DÜNYA ŞAMPİYONASI (16)</span>
+                </button>
+            </div>
+
+
+            <div class="tourney-diff-row">
+                <div class="tourney-diff-label">
+                    <span class="section-icon">🎯</span>
+                    <span data-i18n="tourney_diff_label">Turnuva Zorluğu:</span>
+                </div>
+                <div class="tourney-diff-selector" id="tourney-diff-selector">
+                    <button class="tourney-diff-btn" data-tourney-diff="easy">
+                        <span class="diff-dot easy"></span>
+                        <span data-i18n="diff_easy">Kolay</span>
+                    </button>
+                    <button class="tourney-diff-btn active" data-tourney-diff="medium">
+                        <span class="diff-dot medium"></span>
+                        <span data-i18n="diff_medium">Orta</span>
+                    </button>
+                    <button class="tourney-diff-btn" data-tourney-diff="hard">
+                        <span class="diff-dot hard"></span>
+                        <span data-i18n="diff_hard">Zor</span>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="country-grid" id="country-grid">
+
+            </div>
+
+            <div class="modal-actions-group" style="margin-top: 20px;">
+                <button id="btn-confirm-country" class="game-btn primary-resume">
+                    <span data-i18n="btn_join_tournament">TURNUVAYA KATIL 🏓</span>
+                </button>
+                <button id="btn-country-close" class="game-btn secondary">
+                    <span data-i18n="btn_close">KAPAT</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="tournament-bracket-modal" class="modal-overlay hidden">
+        <div class="modal-card tournament-bracket-card">
+            <div class="modal-header">
+                <div class="bracket-header-top">
+                    <div class="bracket-stage-pill" id="bracket-stage-pill">🌍 <span data-i18n="country_select_title">WORLD TOURNAMENT</span></div>
+                    <button id="btn-bracket-close" class="modal-close-icon" data-i18n-title="btn_close" title="Close">&times;</button>
+                </div>
+                <div class="ms-brand-badge"><span class="ms-brand-white">TABLE TENNIS</span> <span class="ms-brand-yellow">REFLEX</span></div>
+                <h2 id="bracket-modal-title" data-i18n="bracket_title">TURNUVA AĞACI</h2>
+                <p id="bracket-modal-desc" data-i18n="bracket_desc">Kupayı kaldırmak için maçları başarıyla tamamla!</p>
+            </div>
+
+
+            <div class="bracket-container" id="bracket-container">
+
+            </div>
+
+
+            <div class="modal-actions-group" style="margin-top: 18px;">
+                <button id="btn-bracket-play" class="game-btn primary-resume">
+                    <span id="btn-bracket-play-text" data-i18n="btn_bracket_play">MAÇA BAŞLA 🏓</span>
+                </button>
+                <button id="btn-scout-upcoming" class="game-btn secondary">
+                    <span data-i18n="btn_scouting_view">RAKİBİ ANALİZ ET 🔍</span>
+                </button>
+                <div class="modal-actions-row">
+                    <button id="btn-change-country" class="game-btn secondary">
+                        <span data-i18n="btn_change_country">ÜLKE DEĞİŞTİR 🌍</span>
+                    </button>
+                    <button id="btn-reset-tournament" class="game-btn secondary">
+                        <span data-i18n="btn_reset_tournament">YENİ TURNUVA ↺</span>
+                    </button>
+                </div>
+                <button id="btn-exit-to-arcade" class="game-btn secondary">
+                    <span data-i18n="btn_exit_to_arcade">⚔️ AI FIGHT MODUNA DÖN (NORMAL)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="opponent-scouting-modal" class="modal-overlay hidden">
+        <div class="modal-card scouting-card">
+            <div class="modal-header">
+                <div class="bracket-header-top">
+                    <div class="scouting-stage-pill" id="scouting-pill" data-i18n="scouting_title">RAKİP İSTİHBARAT RAPORU</div>
+                    <button id="btn-scouting-close" class="modal-close-icon" data-i18n-title="btn_close" title="Close">&times;</button>
+                </div>
+                <div class="ms-brand-badge"><span class="ms-brand-white">TABLE TENNIS</span> <span class="ms-brand-yellow">REFLEX</span></div>
+                <h2 data-i18n="scouting_title">RAKİP İSTİHBARAT RAPORU</h2>
+                <p data-i18n="scouting_subtitle">Taktik Analiz ve Maç Öncesi Gözlem Raporu</p>
+            </div>
+
+
+            <div class="scouting-opponent-header">
+                <div class="scouting-flag-box">
+                    <img id="scout-flag" src="assets/cn.svg" alt="Opponent">
+                </div>
+                <div class="scouting-meta">
+                    <div class="scout-opp-name" id="scout-opp-name">CHINA</div>
+                    <div class="scout-opp-style" id="scout-opp-style">World Titan & Flawless</div>
+                    <div class="scout-arch-badge" id="scout-arch-badge">APEX CHAMPION</div>
+                </div>
+                <div class="scout-rating-badge" id="scout-rating-badge">98</div>
+            </div>
+
+
+            <div class="scouting-bars-container">
+                <div class="scout-bar-row">
+                    <span class="scout-bar-lbl" data-i18n="scouting_speed">HIZ</span>
+                    <div class="scout-bar-track">
+                        <div class="scout-bar-fill" id="scout-bar-speed" style="width: 90%;"></div>
+                    </div>
+                    <span class="scout-bar-val" id="scout-val-speed">90</span>
+                </div>
+                <div class="scout-bar-row">
+                    <span class="scout-bar-lbl" data-i18n="scouting_spin">SPIN</span>
+                    <div class="scout-bar-track">
+                        <div class="scout-bar-fill" id="scout-bar-spin" style="width: 95%;"></div>
+                    </div>
+                    <span class="scout-bar-val" id="scout-val-spin">95</span>
+                </div>
+                <div class="scout-bar-row">
+                    <span class="scout-bar-lbl" data-i18n="scouting_power">GÜÇ</span>
+                    <div class="scout-bar-track">
+                        <div class="scout-bar-fill" id="scout-bar-power" style="width: 88%;"></div>
+                    </div>
+                    <span class="scout-bar-val" id="scout-val-power">88</span>
+                </div>
+                <div class="scout-bar-row">
+                    <span class="scout-bar-lbl" data-i18n="scouting_defense">SAVUNMA</span>
+                    <div class="scout-bar-track">
+                        <div class="scout-bar-fill" id="scout-bar-defense" style="width: 92%;"></div>
+                    </div>
+                    <span class="scout-bar-val" id="scout-val-defense">92</span>
+                </div>
+            </div>
+
+
+            <div class="scouting-tactics-grid">
+                <div class="scout-tactic-box strengths">
+                    <div class="scout-tactic-title">
+                        <span>⚡</span> <span data-i18n="scouting_strengths">GÜÇLÜ YÖNLER</span>
+                    </div>
+                    <ul class="scout-tactic-list" id="scout-strengths-list">
+                        <li>Kusursuz masa üstü hakimiyeti</li>
+                    </ul>
+                </div>
+                <div class="scout-tactic-box weaknesses">
+                    <div class="scout-tactic-title">
+                        <span>🎯</span> <span data-i18n="scouting_weaknesses">ZAYIF YÖNLER</span>
+                    </div>
+                    <ul class="scout-tactic-list" id="scout-weaknesses-list">
+                        <li>Ağır topspin baskısı altında zorlanabilir</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="scout-coach-box">
+                <div class="coach-avatar">🧠</div>
+                <div class="coach-speech">
+                    <div class="coach-title" data-i18n="scouting_tip">KOÇUN TAKTİK TAVSİYESİ</div>
+                    <div class="coach-text" id="scout-coach-tip">Rakibi köşelere çek ve fileye yakın ani toplarla ritmini boz!</div>
+                </div>
+            </div>
+
+            <div class="modal-actions-group" style="margin-top: 14px;">
+                <button id="btn-scouting-play" class="game-btn primary-resume">
+                    <span data-i18n="btn_bracket_play">MAÇA BAŞLA 🏓</span>
+                </button>
+                <button id="btn-scouting-back" class="game-btn secondary">
+                    <span data-i18n="btn_tournament_view_bracket">TURNUVA AĞACINA DÖN ➔</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="career-stats-modal" class="modal-overlay hidden">
+        <div class="modal-card career-stats-card">
+            <div class="modal-header">
+                <div class="bracket-header-top">
+                    <div class="career-stage-pill">📊 <span data-i18n="career_title">CAREER RECORD</span></div>
+                    <button id="btn-career-close" class="modal-close-icon" data-i18n-title="btn_close" title="Close">&times;</button>
+                </div>
+                <div class="ms-brand-badge"><span class="ms-brand-white">TABLE TENNIS</span> <span class="ms-brand-yellow">REFLEX</span></div>
+                <h2 data-i18n="career_title">CAREER RECORD</h2>
+                <p data-i18n="career_subtitle">Player Statistics & Tournament Trophies</p>
+            </div>
+
+            <div class="career-trophy-banner">
+                <div class="career-trophy-gold">🏆</div>
+                <div class="career-trophy-digits" id="stat-trophies-num">0</div>
+                <div class="career-trophy-label" data-i18n="stat_trophies">KAZANILAN KUPALAR</div>
+            </div>
+
+            <div class="career-stats-grid">
+                <div class="career-stat-card">
+                    <div class="career-stat-val" id="stat-matches-num">0</div>
+                    <div class="career-stat-lbl" data-i18n="stat_matches">Oynanan Maç</div>
+                </div>
+                <div class="career-stat-card">
+                    <div class="career-stat-val green" id="stat-wins-num">0</div>
+                    <div class="career-stat-lbl" data-i18n="stat_wins">Galibiyet</div>
+                </div>
+                <div class="career-stat-card">
+                    <div class="career-stat-val red" id="stat-losses-num">0</div>
+                    <div class="career-stat-lbl" data-i18n="stat_losses">Mağlubiyet</div>
+                </div>
+                <div class="career-stat-card">
+                    <div class="career-stat-val yellow" id="stat-winrate-num">0%</div>
+                    <div class="career-stat-lbl" data-i18n="stat_winrate">Kazanma Oranı</div>
+                </div>
+                <div class="career-stat-card">
+                    <div class="career-stat-val yellow" id="stat-trophies-grid-num">0</div>
+                    <div class="career-stat-lbl" data-i18n="stat_tournament_trophies">Turnuva Kupası</div>
+                </div>
+                <div class="career-stat-card">
+                    <div class="career-stat-val yellow" id="stat-rally-num">0</div>
+                    <div class="career-stat-lbl" data-i18n="stat_highest_rally">En Uzun Ralli</div>
+                </div>
+            </div>
+
+            <div class="modal-actions-group" style="margin-top: 18px;">
+                <button id="btn-career-modal-close" class="game-btn primary-resume">
+                    <span data-i18n="btn_close">KAPAT</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/three.min.js"></script>
+    <script>
+        if (typeof THREE === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+        }
+    </script>
+
+
+    <script src="js/i18n.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/tournament.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

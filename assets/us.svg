@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1900 1000">
+  <rect width="1900" height="1000" fill="#b22234"/>
+  <path d="M0,77H1900M0,231H1900M0,385H1900M0,538H1900M0,692H1900M0,846H1900" stroke="#ffffff" stroke-width="77"/>
+  <rect width="760" height="538" fill="#3c3b6e"/>
+  <g fill="#ffffff" font-size="65" text-anchor="middle" font-family="Arial, sans-serif">
+    <text x="380" y="100">★   ★   ★   ★   ★   ★</text>
+    <text x="380" y="180">★   ★   ★   ★   ★</text>
+    <text x="380" y="260">★   ★   ★   ★   ★   ★</text>
+    <text x="380" y="340">★   ★   ★   ★   ★</text>
+    <text x="380" y="420">★   ★   ★   ★   ★   ★</text>
+    <text x="380" y="500">★   ★   ★   ★   ★</text>
+  </g>
+</svg>
